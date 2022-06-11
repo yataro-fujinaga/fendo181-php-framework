@@ -4,6 +4,7 @@ class ClassLoader
 {
     protected $dir;
 
+    // autoload処理を行う関数を指定する
     /**
      *
      * PHPにオートローダクラスを指定する
@@ -11,9 +12,11 @@ class ClassLoader
      */
     public function register()
     {
+        // ClassLoaderのloadClass関数をautoloadを行う関数として指定
         spl_autoload_register([$this,'loadClass']);
     }
 
+    // Classの読み込み先のディレクトリを指定する
     /**
      *
      * 特定のディレクトリからクラスを読むこむようにします。
@@ -36,6 +39,7 @@ class ClassLoader
         return $this->dir;
     }
 
+    // 指定したディレクトリからClassファイルを読み込む
     /**
      *
      * クラスが指定したディレクトリに存在し、存在すればそのクラスをrequireしてくる

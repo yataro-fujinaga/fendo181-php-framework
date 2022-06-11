@@ -6,6 +6,7 @@ class Router
 
     public function __construct($definitions)
     {
+        // 定義したRoutingのparameterを処理して、routerに格納
         $this->router = $this->compileRoutes($definitions);
     }
 
@@ -52,6 +53,7 @@ class Router
      */
     public function  resolve($path_info)
     {
+        // /から始まっていない場合、/を付与する
         if(substr($path_info,0,1) !== '/'){
             $path_info = '/'.$path_info;
         }

@@ -33,6 +33,7 @@ class PostApplication extends Application
         ));
     }
 
+
     /**
      *
      * ルーティング処理
@@ -41,6 +42,7 @@ class PostApplication extends Application
      */
     protected function registerRoutes()
     {
+        // Routingを定義する
         return [
             '/'
                 => ['controller' => 'post', 'action' => 'home'],

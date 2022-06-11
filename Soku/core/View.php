@@ -25,6 +25,7 @@ class View
         $this->defaults = $defaults;
     }
 
+    // viewファイルでの変数の設定
     /**
      *
      * 変数layout.phpに$nameをキーとした$valueを値としいて格納する
@@ -47,8 +48,10 @@ class View
      */
     public function renderView($_path, $_variables = [ ], $_layout = false)
     {
+        // viewファイルの特定
         $_file = $this->base_dir . '/' . $_path . '.php';
 
+        // 変数をインポート
         extract(array_merge($this->defaults, $_variables));
 
         // アウトプットバッファリグ開始
@@ -59,9 +62,10 @@ class View
         // viewファイル読み込む
         require $_file;
 
-        // $contentに
+        // 出力した内容を$contentに格納
         $content = ob_get_clean();
 
+        // viewsディレクトリ直下のファイルを読み込む
         if ($_layout) {
             $content = $this->renderView($_layout,
                 array_merge($this->layout_variables, array(
@@ -70,9 +74,11 @@ class View
                 ));
         }
 
+        // 読み込んだファイルの内容を返す
         return $content;
     }
 
+    // 文字列をescapeする
     public function escape($string)
     {
         return htmlspecialchars($string,ENT_QUOTES,'UTF-8');

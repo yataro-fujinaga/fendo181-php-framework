@@ -48,10 +48,12 @@ class DbManager
      */
     public function getConnection($name = null)
     {
+        // 接続先の指定がなければ、最初のPDOインスタンスを返す
         if(is_null($name)){
             return current($this->connections);
         }
 
+        // 接続先の指定があれば、そのPDOインスタンスを返す
         return $this->connections[$name];
     }
 
@@ -78,10 +80,13 @@ class DbManager
      */
     public function getConnectionForRepository($repository_name)
     {
+        // 指定したRepositoryに対応するTableが存在するか調べる
         if(isset($this->repository_connection_map[$repository_name])){
+            // 存在したら、その対応に沿ってDBに接続する
             $name = $this->repository_connection_map[$repository_name];
             $con = $this->getConnection($name);
         }else{
+            // 存在しなかったら、新規にDBに接続する
             $con = $this->getConnection();
         }
 
@@ -97,15 +102,21 @@ class DbManager
      */
     public function get($repository_name)
     {
+        // 指定したRepositoryが作成されているか確認
         if(!isset($this->repositories[$repository_name])){
+            // 作成されている場合
             $repository_class = $repository_name.'Repository';
+            // 指定したRepositoryに対応したDBの接続情報を返す
             $con = $this->getConnectionForRepository($repository_name);
 
+            // 指定したRepositoryをInstance化
             $repository = new $repository_class($con);
 
+            // Instance化したRepositoryを格納
             $this->repositories[$repository_name] = $repository;
         }
 
+        // 作成されていない場合
         return $this->repositories[$repository_name];
     }
 

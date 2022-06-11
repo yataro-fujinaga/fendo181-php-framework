@@ -23,13 +23,17 @@ class PostRepository extends DbRepository
      */
     public function insert($name, $comment)
     {
+        // insert処理を行う時間を取得
         $now = new DateTime();
 
+
+        // 実行するSQL
         $sql = "
             INSERT INTO post(name, comment, created_at)
                 VALUES(:name, :comment, :created_at)
         ";
 
+        // SQLを実行した結果を取得
         $stmt = $this->execute($sql, [
             ':name'    => $name,
             ':comment'       => $comment,

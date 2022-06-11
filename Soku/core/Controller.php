@@ -38,18 +38,24 @@ abstract class Controller
 
         $action_methods = $action . 'Action';
 
+        // Controllerに指定したAction名があるか確認
         if (!(method_exists($this, $action_methods))) {
+            // ないなら例外を投げる
             $this->forward404();
         }
 
-        //ログイン判定処理
+        // ログイン判定処理
+        // ログインが必要なActionでログインしているかを確認
         if($this->needsAuthentication($action) && !$this->session->isAuthenticated()){
+            // ログインしていない例外を投げる
             throw new UnauthorizedActionException();
         }
 
         // 可変関数で動的にメソッドを変えるようにする
+        // 指定したControllerのActionにparameterを渡して実行
         $content = $this->$action_methods($params);
 
+        // Actionの戻り値を返す
         return $content;
     }
 
@@ -62,6 +68,7 @@ abstract class Controller
      */
     public function needsAuthentication($action)
     {
+        // 認証が必要なactionとして設定されているかを確認
         if($this->auth_actions === true || (is_array($this->auth_actions) && in_array($action, $this->auth_actions))){
           return true;
         }
@@ -83,13 +90,16 @@ abstract class Controller
     protected function render($variables = [], $template = null, $layout = 'layout')
     {
         $defaults = [
+            // RequestクラスのInstanceを取得
             'request' => $this->request,
+            // 実行されるscriptのURI
             'base_url' => $this->request->getbaseURl(),
-            'sesssion' => $this->session,
+            // SessionクラスのInstanceを取得
+            'session' => $this->session,
 
         ];
 
-        // Viewのインスタンスを生成する
+        // ViewのInstanceを生成する
         $view = new View($this->application->getViewDir(), $defaults);
 
         // テンプレート名を指定してなかったら、アクション名がテンプレート名になる
@@ -97,10 +107,12 @@ abstract class Controller
             $template = $this->action_name;
         }
 
-        // UseControllerだったら、user/$templateとなる
+        // viewファイルのパスを取得
+        // （例）UseControllerだったら、user/$templateとなる
         $path = $this->controller_name . '/' . $template;
 
         // Viewクラスのrenderメソッド
+        // viewファイルの内容を返す
         return $view->renderView($path, $variables, $layout);
     }
 
@@ -123,16 +135,22 @@ abstract class Controller
      */
     protected function redirect($url)
     {
+        // urlがhttp,httpsで始まっていない場合
         if (!preg_match('#https?://#', $url)) {
+            // httpsかhttpかを取得
             $protocol = $this->request->isSSl() ? 'https//' : 'http';
+            // hostを取得
             $host = $this->request->getHost();
+            // base urlを取得
             $base_url = $this->request->getBaseUrl();
 
+            // urlを取得
             $url = $protocol . $host . $url;
         }
 
+        // Status Codeを設定する
         $this->response->setStatusCode(302, 'Found');
-        // リダイレクトする
+        // HttpHeaderの設定
         $this->response->setHttpHeader('Location', $url);
     }
 

@@ -23,8 +23,11 @@ abstract class Application
      */
     public function __construct($debug = false)
     {
+        // エラー表示の設定
         $this->setDebugMode($debug);
+        // Applicationクラスの初期化処理
         $this->initialize();
+        // DB接続の設定
         $this->configure();
     }
 
@@ -178,18 +181,26 @@ abstract class Application
     public function run()
     {
         try{
+            // 対応するroutingが存在するかを確認
             $params = $this->router->resolve($this->request->getPathInfo());
+            // 対応するroutingが存在しない場合
             if($params === false){
+                // 例外を投げる
                 throw  new HttpNotFoundException('No router found for'.$this->request->getPathInfo());
             }
 
+            // Controller名を取得
             $controller = $params['controller'];
+            // Action名を取得
             $action = $params['action'];
+            // ControllerファイルのActionを実行
             $this->runAction($controller,$action,$params);
         }catch (HttpNotFoundException $e){
+            // 例外が発生した場合は404ページを返す
             $this->render404Page($e);
         }
 
+        // responseを送信
         $this->response->send();
 
     }
@@ -207,11 +218,15 @@ abstract class Application
         // ルーティングはコントローラーの小文字を指定するようにしたので、ucfirstで大文字に変換する
         $controller_class = ucfirst($controller_name).'Controller';
 
+        // 指定されたコントローラ名から対応するController Objectを取得
         $controller = $this->findController($controller_class);
+
+        // Controllerファイルが見つからないときに例外を投げる
         if($controller === false){
             throw  new HttpNotFoundException($controller_class.'controller is not found');
         }
 
+        // ControllerのActionを実行した戻り値を取得
         $content = $controller->run($action,$params);
 
         // コンテンツをセットする

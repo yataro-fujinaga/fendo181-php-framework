@@ -14,6 +14,7 @@ class Request
      */
     public function isPost()
     {
+        // POSTメソッドのrequestかどうかを確認
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             return true;
         }
@@ -48,10 +49,12 @@ class Request
      */
     public function getPost($name, $default = null)
     {
+        // 指定したkeyが存在するかを確認
         if (isset($_POST[$name])) {
             return $_POST[$name];
         }
 
+        // 指定したkeyが存在しない場合
         return $default;
     }
 

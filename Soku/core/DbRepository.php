@@ -56,7 +56,7 @@ abstract class DbRepository
      *
      * @param $sql
      * @param array $params
-     * @return  PDOStatementクラスののfecthAllメソッドの実行結果
+     * @return  PDOStatementクラスののfetchAllメソッドの実行結果
      */
     public function fetchAll($sql,$params = [])
     {

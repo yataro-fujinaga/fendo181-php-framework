@@ -27,6 +27,7 @@ class Response
         echo $this->content;
     }
 
+    // Responseクラスに値を格納
     /**
      *
      * contentをセットする

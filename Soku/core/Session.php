@@ -12,6 +12,7 @@ class Session
      */
     public function __construct()
     {
+        // Sessionが開始されてなかったら開始する
         if(!self::$sessionStarted){
             session_start();
 
@@ -42,10 +43,12 @@ class Session
 
     public function get($name,$default = null)
     {
+        // Sessionに指定されたkeyが存在するか確認
         if(isset($_SESSION[$name])){
             return $_SESSION[$name];
         }
 
+        // 存在しない場合、nullを返す
         return $default;
     }
 
@@ -106,6 +109,8 @@ class Session
      */
     public function isAuthenticated()
     {
+        // __authenticatedをkeyとしたSessionを取得
+        // keyがない場合はfalseを取得
         return $this->get('__authenticated',false);
     }
 
